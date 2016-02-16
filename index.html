@@ -2,9 +2,40 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
         <title>Neighbourhoold Map</title>
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places" ></script>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
     </head>
     <body>
-        
+        <div id='Map_Loading_Error'></div>
+        <div id='Map_Canvas'></div>
+        <div class='container'>
+            <div class='row'>
+                <div class='col-lg-4'>
+                    <div class='input-group'>
+                        <input type="filter" class='form-control' placeholder='Filter on...'>
+                        <span class='input-group-btn'>
+                            <button class='btn btn-default' type='button'>Filter</button>
+                        </span>
+                    </div><!-- /input-group-->
+                </div><!-- /col-4-->
+            </div>
+            <div class='row'>
+                <div class='col-lg-4'>
+                    <div class='input-group'>
+                        <input data-bind="value:search_location" type="search" class='form-control' placeholder='Search for ...'>
+                        <span class='input-group-btn'>
+                            <button data-bind="click:searchPos" class='btn btn-default' type='button'>Search</button>
+                        </span>
+                    </div><!-- /input-group-->
+                </div><!-- /col-4-->
+            </div>
+        </div>
     </body>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="js/knockout-3.4.0.js"></script>
+    <script src="js/app.js" async></script>
+
 </html>
