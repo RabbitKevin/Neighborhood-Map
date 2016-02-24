@@ -9,7 +9,7 @@ var Venue = function(list, foursquareID) {
     //Venue brand information
     this.name = list.venue.name;
     this.id = list.venue.id;
-    this.category = list.venue.categories[0].name;
+    this.category = this.getCategory(list);
     //------Useful links--------------//
     this.photoPrefix = "https://irs2.4sqi.net/img/general/";
     this.photoSize = "100x100";
@@ -50,6 +50,12 @@ Venue.prototype = {
             return "http://placehold.it/100x100";
         }
         return this.photoPrefix+this.photoSize+data.featuredPhotos.items[0].suffix;
+    },
+    getCategory: function(data) {
+        if(!data.venue.categories[0]) {
+            return "Category not available";
+        }
+        return data.venue.categories[0].name;
     }
 }
 function AppViewModel() {
@@ -59,6 +65,7 @@ function AppViewModel() {
         infowindow,
         latInfo,
         lngInfo,
+        bounds,
         map;
     var default_ExploreKeyWord = 'best nearby';
     //------Observable data--------------//
@@ -69,7 +76,7 @@ function AppViewModel() {
     //function getNearby
     //---------Inner function-------//
     //Create single marker for given venue object//
-    function setVenueMarkers(venue) {
+    function createVenueMarkers(venue) {
 
     }
     //---------Create map center marker------//
@@ -117,11 +124,13 @@ function AppViewModel() {
                 console.log(data);
                 var responseData = data.response.groups[0].items;//Array contain all venue information
                 responseData.forEach(function(item){
+                    //console.log(item.venue.name);
                     self.popularLocation.push(new Venue(item, client_info));
                 });
                 //-----Creating marker and photo------//
                 self.popularLocation().forEach(function(venue){
                     console.log('Creating marker');
+                    createVenueMarkers(venue);
                 });
                 //-----Change the map bounds for fitting----//
                 var mapBounds = data.response.suggestedBounds;
@@ -150,7 +159,6 @@ function AppViewModel() {
             $('#Map_Loading_Error').html('<h2>Errors in searching</h2><h2>Try other position name</h2>');
             return;
         }
-
         var searchPlace = placeList[0];
         console.log(searchPlace.geometry.location.toString());
         setMapCenterMarker(searchPlace);
@@ -196,6 +204,7 @@ function AppViewModel() {
     window.addEventListener('resize', function(e) {
         //map.panTo(new google.maps.LatLng(34.037253, -118.246974));
         $('#map-canvas').height($(window).height());
+        //google.maps.event.trigger(map, 'resize');
     });
     //-------Search function triggered by search button------//
     self.searchPos=function() {
