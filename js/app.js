@@ -1,3 +1,57 @@
+/**
+    Model created for venue listed in map
+*/
+var Venue = function(list, foursquareID) {
+    //Location information
+    this.lat = list.venue.location.lat;
+    this.lng = list.venue.location.lng;
+    this.formattedAddresss = list.venue.location.formattedAddress;//Array contains address information
+    //Venue brand information
+    this.name = list.venue.name;
+    this.id = list.venue.id;
+    this.category = list.venue.categories[0].name;
+    //------Useful links--------------//
+    this.photoPrefix = "https://irs2.4sqi.net/img/general/";
+    this.photoSize = "100x100";
+    //-----Possible info offered------//
+    this.formattedContact = this.getFormattedContact(list);
+    this.tips = this.getTipsInfo(list);
+    this.url = this.getUrl(list);
+    this.rating = this.getRating(list);
+    this.photoUrl = this.getPhotoUrl(list);
+}
+Venue.prototype = {
+    getFormattedContact: function(data) {
+        if(!data.venue.contact.formattedPhone) {
+            return "Contact not available";
+        }
+        return data.venue.contact.formattedPhone;
+    },
+    getTipsInfo: function(data) {
+        if(!data.tips) {
+            return "Tips not available";
+        }
+        return data.tips[0].text;
+    },
+    getUrl: function(data) {
+        if(!data.venue.url) {
+            return "Website not available";
+        }
+        return data.venue.url;
+    },
+    getRating: function(data) {
+        if(!data.venue.rating) {
+            return "Rating not available";
+        }
+        return data.venue.rating;
+    },
+    getPhotoUrl: function(data) {
+        if(!data.featuredPhotos) {
+            return "http://placehold.it/100x100";
+        }
+        return this.photoPrefix+this.photoSize+data.featuredPhotos.items[0].suffix;
+    }
+}
 function AppViewModel() {
     //-----Delivering object handler----//
     var self = this;
@@ -9,10 +63,16 @@ function AppViewModel() {
     var default_ExploreKeyWord = 'best nearby';
     //------Observable data--------------//
     self.search_location = ko.observable();
-    self.exploreKeyword = ko.observable(default_ExploreKeyWord);
+    self.exploreKeyword = ko.observable(default_ExploreKeyWord);//return the popular places in specified position
+    self.popularLocation = ko.observableArray();//array contain all postion from foursquare
 
     //function getNearby
     //---------Inner function-------//
+    //Create single marker for given venue object//
+    function setVenueMarkers(venue) {
+
+    }
+    //---------Create map center marker------//
     function setMapCenterMarker(position) {
         map.panTo(position.geometry.location);//move the map to searched result place
         //Create single market for the searched location point
@@ -30,6 +90,7 @@ function AppViewModel() {
         });
         //Add event listener to the position Marker
         positionContent = "<h2>"+positionMarker.getTitle()+"<h2>";
+            //Create inforwindow that contains position info
             infowindow = new google.maps.InfoWindow({
             content: positionContent
         });
@@ -43,16 +104,34 @@ function AppViewModel() {
     function getFourSquareInfo() {
         var exploreURL = 'https://api.foursquare.com/v2/venues/explore?';
         var date_info = '&v='+getCurrentDate();
-        var client_info = 'client_id=S1RJQM0E1RW01XHHNRHUD4ZCVO0JX2ELJHIJAPYNVGDU0TCO&client_secret=RS3IT5QWQJ34P20FSPDMMSFJ1NLUCY14LRZB31WAS2AKAUJZ'+date_info;
+        var client_info = 'client_id=S1RJQM0E1RW01XHHNRHUD4ZCVO0JX2ELJHIJAPYNVGDU0TCO&client_secret=RS3IT5QWQJ34P20FSPDMMSFJ1NLUCY14LRZB31WAS2AKAUJZ';
         var query = '&query=' + self.exploreKeyword();
         var positionInfo = '&ll='+latInfo+','+lngInfo;
-        var ajaxURL = exploreURL+client_info + positionInfo + query;
+        var photoParameter = '&venuePhotos=1';
+        var ajaxURL = exploreURL + client_info +date_info + photoParameter + positionInfo + query;
         //------Ajax request------//
         $.ajax({
             url : ajaxURL,
             success : function(data){
                 console.log('request successful');
                 console.log(data);
+                var responseData = data.response.groups[0].items;//Array contain all venue information
+                responseData.forEach(function(item){
+                    self.popularLocation.push(new Venue(item, client_info));
+                });
+                //-----Creating marker and photo------//
+                self.popularLocation().forEach(function(venue){
+                    console.log('Creating marker');
+                });
+                //-----Change the map bounds for fitting----//
+                var mapBounds = data.response.suggestedBounds;
+                if (mapBounds != undefined) {
+                    console.log('Bounds change');
+                    bounds = new google.maps.LatLngBounds(
+                        new google.maps.LatLng(mapBounds.sw.lat, mapBounds.sw.lng),
+                        new google.maps.LatLng(mapBounds.ne.lat, mapBounds.ne.lng));
+                    map.fitBounds(bounds);
+                }
             },
             complete: function() {
                 //if(self.topPicks().length === 0)
@@ -79,6 +158,8 @@ function AppViewModel() {
         lngInfo = searchPlace.geometry.location.lng();
         //-------Request map info and draw marker----------//
         getFourSquareInfo();
+        //-------------------------------------------------//
+
     }
     function getGeographyInfo(locationName) {
         var request = {
