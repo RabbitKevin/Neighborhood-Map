@@ -89,6 +89,10 @@ function AppViewModel() {
         });
         var markerWindowInfo = createMarkerWindowInfo(venue);
         //------Add clicker info-----//
+        venueMarker.addListener('click', function() {
+            map.setCenter(venuePosition);//move the center to the position marker if not in there
+            //infowindow.open(map, positionMarker);
+        });
     }
     //---------Create map center marker------//
     function setMapCenterMarker(position) {
