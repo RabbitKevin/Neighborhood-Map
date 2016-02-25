@@ -75,9 +75,20 @@ function AppViewModel() {
 
     //function getNearby
     //---------Inner function-------//
+    function createMarkerWindowInfo() {
+        return " ";
+    }
     //Create single marker for given venue object//
     function createVenueMarkers(venue) {
-
+        //Position info for marker
+        var venuePosition = new google.maps.LatLng(venue.lat, venue.lng);
+        var venueMarker = new google.maps.Marker({
+            map: map,
+            position: venuePosition,
+            title: venue.name
+        });
+        var markerWindowInfo = createMarkerWindowInfo(venue);
+        //------Add clicker info-----//
     }
     //---------Create map center marker------//
     function setMapCenterMarker(position) {
