@@ -76,7 +76,7 @@ function AppViewModel() {
     //function getNearby
     //---------Inner function-------//
     function createMarkerWindowInfo() {
-        return " ";
+        var infoWindowContent = '<div class = '
     }
     //Create single marker for given venue object//
     function createVenueMarkers(venue) {
@@ -214,6 +214,7 @@ function AppViewModel() {
         }
         map = new google.maps.Map(document.getElementById('Map_Canvas'), mapOptions);
         $('#Map_Canvas').height($(window).height());//Set the height of map to the height of whole window
+        getGeographyInfo("Milpitas");
     };
     //Initialize map and set event listener to it so that the map is responsive
     google.maps.event.addDomListener(window, 'load', initializeMap);
@@ -222,13 +223,6 @@ function AppViewModel() {
         google.maps.event.trigger(map, "resize");
         map.setCenter(center);
     });
-    /*
-    window.addEventListener('resize', function(e) {
-        //map.panTo(new google.maps.LatLng(34.037253, -118.246974));
-        $('#map-canvas').height($(window).height());
-        //google.maps.event.trigger(map, 'resize');
-    });
-    */
     //-------Search function triggered by search button------//
     self.searchPos=function() {
         searchPos = self.search_location();

@@ -16,6 +16,9 @@
   left: 0;
   margin-left: 0;
 }
-#search {
-  
+
+.nav {
+  max-height: 250px;
+  overflow-y:scroll;
+  background-color: white;
 }

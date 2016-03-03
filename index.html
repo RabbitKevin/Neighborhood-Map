@@ -17,15 +17,17 @@
                 <div class='col-sm-3' id='filter'>
                     <div class='input-group'>
                         <input type="filter" class='form-control' placeholder='Filter on...'>
-                        <span class='input-group-btn'>
+                        <span class='input-group-btn click-button'>
                             <button class='btn btn-default' type='button'>Filter</button>
                         </span>
                     </div><!-- /input-group-->
                 </div><!-- /col-3-->
+            </div>
+            <div class='row'>
                 <div class='col-sm-3' id='search'>
                     <div class='input-group'>
                         <input data-bind="value:search_location" type="search" class='form-control' placeholder='Search for ...'>
-                        <span class='input-group-btn'>
+                        <span class='input-group-btn click-button'>
                             <button data-bind="click:searchPos" class='btn btn-default' type='button'>Search</button>
                         </span>
                     </div><!-- /input-group-->
@@ -33,6 +35,21 @@
             </div>
             <!--result list-->
             <div class='row'>
+                <div class='col-sm-4'>
+                    <div id = 'filter-error'>Words for filtering failture</div>
+                    <div data-bind='foreach: popularLocation()' class='venues-list-container nav'>
+                        <div class='venue-list-window'>
+                            <div class='left-text'>
+                                <div class='venue-tips'>
+                                    <div data-bind="text: tips" class='text-info'></div>
+                                </div>
+                                <div data-bind="text: tips" class='image-info'></div>
+                            <div>
+                            <div class='right-image'>
+                            <div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
