@@ -22,3 +22,11 @@
   overflow-y:scroll;
   background-color: white;
 }
+
+.left-text {
+  width: 50%;
+}
+
+.right-image {
+  width: 100px;
+}

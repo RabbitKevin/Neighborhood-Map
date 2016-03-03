@@ -46,10 +46,10 @@ Venue.prototype = {
         return data.venue.rating;
     },
     getPhotoUrl: function(data) {
-        if(!data.featuredPhotos) {
+        if(!data.venue.featuredPhotos) {
             return "http://placehold.it/100x100";
         }
-        return this.photoPrefix+this.photoSize+data.featuredPhotos.items[0].suffix;
+        return this.photoPrefix+this.photoSize+data.venue.featuredPhotos.items[0].suffix;
     },
     getCategory: function(data) {
         if(!data.venue.categories[0]) {
