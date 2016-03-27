@@ -41,19 +41,20 @@
             </div>
             <!--result list-->
             <div class='row'>
-                <div class='col-sm-4'>
+                <div class='col-md-4'>
                     <div id = 'filter-error'>Words for filtering failture</div>
                     <!-- List view -->
-                    <div data-bind='foreach: popularLocation()' class='venues-list-container nav'>
-                        <div class='venue-list-window'>
-                            <div class='left-text'>
-                                <div class='venue-tips'>
-                                    <span class="glyphicons glyphicon-user"></span>
-                                    <div data-bind="text: tips" class='text-info'></div>
-                                </div>
+                    <div data-bind='foreach: popularLocation()' class="panel panel-default nav">
+                        <div class="panel-body">
+                            <div class="panel-info">
+                                <p><strong>Tel: 011-345-898</strong></p>
+                                <p>9182 Lorem Ipsum<br />
+                                    consectetur adipiscing elit.<br />
+                                   Nullam vel lacus felis.</p>
                             </div>
-                            <div class='right-image'>
-                                <img data-bind='attr: {src: photoUrl}' class='venue-image'></img>
+                            <div class="panel-more1">
+                                <img class='img-responsive' src="http://lorempixel.com/100/100" />
+                                <br /><span>Caption</span>
                             </div>
                         </div>
                     </div>
@@ -64,5 +65,4 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="js/knockout-3.4.0.js"></script>
     <script src="js/app.js" async></script>
-
 </html>

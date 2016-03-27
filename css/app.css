@@ -24,54 +24,78 @@
 }
 
 .venue-list-window {
-  height: 200px;
-}
-
-.left-text {
-  text-align: left;
-  display:inline-block;
-}
-
-.right-image {
-  width: 100px;
-  float: right;
-  display:inline-block;
+  width: 100%;
 }
 
 .custom-search-input {
-        margin:0;
-        margin-top: 10px;
-        padding: 0;
-        margin-left: 10px;
-    }
-    .custom-search-input .search-query {
-        padding-right: 3px;
-        padding-right: 4px \9;
-        padding-left: 4px \9;
-        /* IE7-8 doesn't have border-radius, so don't indent the padding */
+    margin:0;
+    margin-top: 10px;
+    padding: 0;
+    margin-left: 10px;
+}
+.custom-search-input .search-query {
+    padding-right: 3px;
+    padding-right: 4px \9;
+    padding-left: 4px \9;
+    /* IE7-8 doesn't have border-radius, so don't indent the padding */
 
-        margin-bottom: 0;
-        -webkit-border-radius: 3px;
-        -moz-border-radius: 3px;
-        border-radius: 3px;
-    }
+    margin-bottom: 0;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
 
-    .custom-search-input button {
-        border: 0;
-        background: none;
-        /** belows styles are working good */
-        padding: 2px 5px;
-        margin-top: 2px;
-        position: relative;
-        left: -28px;
-        /* IE7-8 doesn't have border-radius, so don't indent the padding */
-        margin-bottom: 0;
-        -webkit-border-radius: 3px;
-        -moz-border-radius: 3px;
-        border-radius: 3px;
-        color:#D9230F;
-    }
+.custom-search-input button {
+    border: 0;
+    background: none;
+    /** belows styles are working good */
+    padding: 2px 5px;
+    margin-top: 2px;
+    position: relative;
+    left: -28px;
+    /* IE7-8 doesn't have border-radius, so don't indent the padding */
+    margin-bottom: 0;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    color:#D9230F;
+}
 
-    .search-query:focus + button {
-        z-index: 3;
-    }
+.search-query:focus + button {
+    z-index: 3;
+}
+
+.panel-info, .panel-rating {
+    float: left;
+    margin: 0 10px;
+}
+
+.panel-more1 {
+  float: right;
+  vertical-align: top;
+}
+
+.panel-body {
+  float: left;
+  width: 100%;
+}
+
+.venue-list-container {
+  padding-top: 5px;
+}
+.venue-list-window {
+  margin
+}
+
+.left-content .right-content {
+  display: inline-block;
+  height:100%;
+}
+.left-content {
+}
+.right-content {
+  width: 100%;
+  display: inline;
+  vertical-align: top;
+  float: right;
+}
