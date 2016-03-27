@@ -67,16 +67,18 @@ function AppViewModel() {
         lngInfo,
         bounds,
         map;
-    var default_ExploreKeyWord = 'best nearby';
+    var default_ExploreKeyWord = 'restaurant';//default keyword for venue filtering
     //------Observable data--------------//
     self.search_location = ko.observable();
     self.exploreKeyword = ko.observable(default_ExploreKeyWord);//return the popular places in specified position
-    self.popularLocation = ko.observableArray();//array contain all postion from foursquare
+    self.filterKeyword = ko.observable();//keyword used to filter the list
+    self.popularLocation = ko.observableArray();//array contain all positions from foursquare
+    self.filterLocation = ko.observableArray();//array contains filtered venues
 
     //function getNearby
     //---------Inner function-------//
     function createMarkerWindowInfo() {
-        var infoWindowContent = '<div class = '
+        var infoWindowContent = '<div class = ';
     }
     //Create single marker for given venue object//
     function createVenueMarkers(venue) {
@@ -113,7 +115,7 @@ function AppViewModel() {
         //Add event listener to the position Marker
         positionContent = "<h2>"+positionMarker.getTitle()+"<h2>";
             //Create inforwindow that contains position info
-            infowindow = new google.maps.InfoWindow({
+        infowindow = new google.maps.InfoWindow({
             content: positionContent
         });
         positionMarker.addListener('click', function() {
@@ -138,9 +140,12 @@ function AppViewModel() {
                 console.log('request successful');
                 console.log(data);
                 var responseData = data.response.groups[0].items;//Array contain all venue information
+                self.popularLocation([]);
                 responseData.forEach(function(item){
                     //console.log(item.venue.name);
-                    self.popularLocation.push(new Venue(item, client_info));
+                    var tmp = new Venue(item, client_info);
+                    self.popularLocation.push(tmp);
+                    self.filterLocation.push(tmp);
                 });
                 //-----Creating marker and photo------//
                 self.popularLocation().forEach(function(venue){
@@ -205,7 +210,7 @@ function AppViewModel() {
     function initializeMap() {
         mapOptions = {
             center: {lat: 37.777158, lng: -122.4185117},//just for test, initial position
-            zoom: 15,
+            zoom: 12,
             diableDefaultUI: true
         };
         if(typeof google == 'undefined') {
@@ -223,8 +228,18 @@ function AppViewModel() {
         google.maps.event.trigger(map, "resize");
         map.setCenter(center);
     });
+    //Function to filter venue
+    function isFilterMatch(keyword, venue) {
+        
+    }
     //-------Search function triggered by search button------//
-    self.searchPos=function() {
+    self.filterVenue = function() {
+        self.filterVenue([]);//clear the array for list
+        self.popularLocation().forEach(function(Venue){
+
+        });
+    }
+    self.searchPos = function() {
         searchPos = self.search_location();
         console.log("Input position is "+searchPos);
         self.search_location("");
