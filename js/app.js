@@ -228,23 +228,27 @@ function AppViewModel() {
         google.maps.event.trigger(map, "resize");
         map.setCenter(center);
     });
-    //Function to filter venue
-    function isFilterMatch(keyword, venue) {
-        
-    }
     //-------Search function triggered by search button------//
-    self.filterVenue = function() {
-        self.filterVenue([]);//clear the array for list
-        self.popularLocation().forEach(function(Venue){
-
-        });
-    }
     self.searchPos = function() {
         searchPos = self.search_location();
         console.log("Input position is "+searchPos);
         self.search_location("");
         //----------------------//
         getGeographyInfo(searchPos);
+    }
+    /*
+        for selected list in the image list, move the map to corresponding marker
+    */
+    self.panToVenueMarker = function(venue) {
+        //var venueInfowindowStr = setVenueInfowindowStr(venue);
+        var venuePosition = new google.maps.LatLng(venue.lat, venue.lng);
+
+        //self.selectedMarker(venue.marker);
+        //self.selectedVenue(venue.id);
+        //infowindow.setContent(venueInfowindowStr);
+        //infowindow.open(map, venue.marker);
+        map.panTo(venuePosition);
+        //selectedMarkerBounce(venue.marker);       This is for marker animation
     }
 }
 

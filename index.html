@@ -45,15 +45,11 @@
                     <div id = 'filter-error'>Words for filtering failture</div>
                     <!-- List view -->
                     <div data-bind='foreach: popularLocation()' class="panel panel-default nav">
-                        <div class="panel-body">
-                            <div class="panel-info">
-                                <p><strong>Tel: 011-345-898</strong></p>
-                                <p>9182 Lorem Ipsum<br />
-                                    consectetur adipiscing elit.<br />
-                                   Nullam vel lacus felis.</p>
+                        <div data-bind='click: $root.panToVenueMarker' class="panel-body">
+                            <div data-bind='text: tips' class="panel-info">
                             </div>
                             <div class="panel-more1">
-                                <img class='img-responsive' src="http://lorempixel.com/100/100" />
+                                <img data-bind="attr: {src: photoUrl}" class='img-responsive'/>
                                 <br /><span>Caption</span>
                             </div>
                         </div>
