@@ -82,16 +82,34 @@
   left:5px;
 }
 
+.venue-name {
+  font-size: 25px;
+  font-weight: 300;
+}
+
+.badge {
+  font-size: 30px;
+  font-weight:300;
+  background-color: #5cb85c;
+}
+
+.venue-address {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
 .venue-list-container {
   padding-top: 5px;
 }
 
-.content {
+.venue-name, .venue-rating, .content, .left-content {
   display: inline-block;
 }
 
+.content {
+  word-wrap:break-word;
+}
+
 .left-content {
-  display: inline-block;
   height:100%;
   width: 100%;
 }
@@ -103,4 +121,13 @@
   vertical-align: top;
   float: right;
   width:30%;
+}
+
+@media only screen and (max-width : 320px) {
+  .left-content{
+    width:60%;
+  }
+  .right-content{
+    width:40%;
+  }
 }

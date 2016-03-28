@@ -41,16 +41,18 @@
             </div>
             <!--result list-->
             <div class='row'>
-                <div class='col-sm-4'>
-                    <div id = 'filter-error'>Words for filtering failture</div>
+                <div class='col-md-4'>
+                    <div id = 'filter-error'></div>
                     <!-- List view -->
                     <div data-bind='foreach: popularLocation()' class="nav">
                         <div data-bind='click: $root.panToVenueMarker' class="venue-list-item">
                             <div class='left-content'>
-                                <div data-bind="text: name" class="venue-name"></div>
-                                <div class="venue-sub group">
+                                <div class="venue-sub">
                                   <div class="venue-rating"><span data-bind="text: rating" class="badge"></span></div>
-                                  <div data-bind="text: formattedAddress" class="venue-address"></div>
+                                  <div data-bind="text: name" class="venue-name content"></div>
+                                </div>
+                                <div class='venue-address'>
+                                    <div data-bind="text: formattedAddress" class="content"></div>
                                 </div>
                                 <div class="venue-category">
                                   <div class="glyphicon glyphicon-tag"></div>

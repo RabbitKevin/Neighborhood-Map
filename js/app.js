@@ -70,13 +70,12 @@ function AppViewModel() {
         bounds,
         map;
     var default_ExploreKeyWord = 'restaurant';//default keyword for venue filtering
+    var default_SearchPlace = 'Milpitas'
     //------Observable data--------------//
-    self.search_location = ko.observable();
+    self.search_location = ko.observable(default_SearchPlace);
     self.exploreKeyword = ko.observable(default_ExploreKeyWord);//return the popular places in specified position
-    self.filterKeyword = ko.observable();//keyword used to filter the list
     self.popularLocation = ko.observableArray();//array contain all positions from foursquare
-    self.filterLocation = ko.observableArray();//array contains filtered venues
-
+    self.selectedMarker = ko.observable();
     //function getNearby
     //---------Inner function-------//
     function setMarkerBounce(marker) {
@@ -87,8 +86,13 @@ function AppViewModel() {
             marker.setAnimation(google.maps.Animation.BOUNCE);
         }
     }
-    function createMarkerWindowInfo() {
-        var infoWindowContent = '<div class = ';
+    function createMarkerWindowInfo(venue) {
+        var content = '<div class="venue-infowindow">'
+                            + '<div class="venue-category"><span class="glyphicon glyphicon-user"></span>'
+                            + venue.tips
+                            + '</div>'
+                            + '</div>';
+        return  content;
     }
     //Create single marker for given venue object//
     function createVenueMarkers(venue) {
@@ -105,7 +109,8 @@ function AppViewModel() {
             document.getElementById(venue.id).scrollIntoView();
             map.setCenter(venuePosition);//move the center to the position marker if not in there
             setMarkerBounce(venue.marker);
-            //infowindow.open(map, positionMarker);
+            infowindow.setContent(markerWindowInfo);
+            infowindow.open(map, venueMarker);
         });
         //link marker to venue
         venue.marker = venueMarker;
@@ -176,13 +181,11 @@ function AppViewModel() {
                 }
             },
             complete: function() {
-                //if(self.topPicks().length === 0)
-                    //$('#foursquare-API-error').html('<h2>No result available.</h2><h2>Please change your keywords.</h2>');
-                console.log("result completed");
+                if(self.search_location().length === 0)
+                    $('#filter-error').html('<h2>No matched result available.</h2>');
             },
             error: function( data ) {
-                //$('#foursquare-API-error').html('<h2>There are errors when retrieving venue data. Please try refresh page later.</h2>');
-                console.log('data request error');
+                $('#filter-error').html('<h2>Request failed</h2>');
             }
         });
     }
@@ -232,7 +235,7 @@ function AppViewModel() {
         }
         map = new google.maps.Map(document.getElementById('Map_Canvas'), mapOptions);
         $('#Map_Canvas').height($(window).height());//Set the height of map to the height of whole window
-        getGeographyInfo("Milpitas");
+        getGeographyInfo(default_SearchPlace);
     };
     //Initialize map and set event listener to it so that the map is responsive
     google.maps.event.addDomListener(window, 'load', initializeMap);
@@ -243,23 +246,18 @@ function AppViewModel() {
     });
     //-------Search function triggered by search button------//
     self.searchPos = function() {
-        searchPos = self.search_location();
-        console.log("Input position is "+searchPos);
-        self.search_location("");
-        //----------------------//
-        getGeographyInfo(searchPos);
+        getGeographyInfo(self.search_location());
     }
     /*
         for selected list in the image list, move the map to corresponding marker
     */
     self.panToVenueMarker = function(venue) {
-        //var venueInfowindowStr = setVenueInfowindowStr(venue);
+        var venueInfowindowStr = createMarkerWindowInfo(venue);
         var venuePosition = new google.maps.LatLng(venue.lat, venue.lng);
 
-        //self.selectedMarker(venue.marker);
-        //self.selectedVenue(venue.id);
-        //infowindow.setContent(venueInfowindowStr);
-        //infowindow.open(map, venue.marker);
+        self.selectedMarker(venue.marker);
+        infowindow.setContent(venueInfowindowStr);
+        infowindow.open(map, venue.marker);
         map.panTo(venuePosition);
         setMarkerBounce(venue.marker);//This is for marker animation
     }
