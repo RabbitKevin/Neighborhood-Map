@@ -5,14 +5,16 @@ var Venue = function(list, foursquareID) {
     //Location information
     this.lat = list.venue.location.lat;
     this.lng = list.venue.location.lng;
-    this.formattedAddresss = list.venue.location.formattedAddress;//Array contains address information
+    this.formattedAddress = list.venue.location.formattedAddress;//Array contains address information
+    this.formattedPhone = list.venue.contact.formattedPhone;
+    this.marker = {};
     //Venue brand information
     this.name = list.venue.name;
     this.id = list.venue.id;
     this.category = this.getCategory(list);
     //------Useful links--------------//
     this.photoPrefix = "https://irs2.4sqi.net/img/general/";
-    this.photoSize = "100x100";
+    //this.photoSize = "100x100";
     //-----Possible info offered------//
     this.formattedContact = this.getFormattedContact(list);
     this.tips = this.getTipsInfo(list);
@@ -49,7 +51,7 @@ Venue.prototype = {
         if(!data.venue.featuredPhotos) {
             return "http://placehold.it/100x100";
         }
-        return this.photoPrefix+this.photoSize+data.venue.featuredPhotos.items[0].suffix;
+        return this.photoPrefix+'100x100'+data.venue.featuredPhotos.items[0].suffix;
     },
     getCategory: function(data) {
         if(!data.venue.categories[0]) {
@@ -77,6 +79,14 @@ function AppViewModel() {
 
     //function getNearby
     //---------Inner function-------//
+    function setMarkerBounce(marker) {
+        if(!marker.getAnimation()) {
+            self.popularLocation().forEach(function(venue) {
+                venue.marker.setAnimation(null);
+            });
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+        }
+    }
     function createMarkerWindowInfo() {
         var infoWindowContent = '<div class = ';
     }
@@ -92,9 +102,13 @@ function AppViewModel() {
         var markerWindowInfo = createMarkerWindowInfo(venue);
         //------Add clicker info-----//
         venueMarker.addListener('click', function() {
+            document.getElementById(venue.id).scrollIntoView();
             map.setCenter(venuePosition);//move the center to the position marker if not in there
+            setMarkerBounce(venue.marker);
             //infowindow.open(map, positionMarker);
         });
+        //link marker to venue
+        venue.marker = venueMarker;
     }
     //---------Create map center marker------//
     function setMapCenterMarker(position) {
@@ -145,7 +159,6 @@ function AppViewModel() {
                     //console.log(item.venue.name);
                     var tmp = new Venue(item, client_info);
                     self.popularLocation.push(tmp);
-                    self.filterLocation.push(tmp);
                 });
                 //-----Creating marker and photo------//
                 self.popularLocation().forEach(function(venue){
@@ -248,7 +261,7 @@ function AppViewModel() {
         //infowindow.setContent(venueInfowindowStr);
         //infowindow.open(map, venue.marker);
         map.panTo(venuePosition);
-        //selectedMarkerBounce(venue.marker);       This is for marker animation
+        setMarkerBounce(venue.marker);//This is for marker animation
     }
 }
 

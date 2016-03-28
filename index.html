@@ -30,7 +30,7 @@
             <div class='row'>
                 <div class="custom-search-input">
                     <div class="input-group col-sm-3">
-                        <input data-bind="value:search_location" type="text" class="search-query form-control" placeholder="Filter"/>
+                        <input data-bind="value:exploreKeyword" type="text" class="search-query form-control" placeholder="Filter"/>
                         <span class="input-group-btn">
                             <button data-bind="click:searchPos" class="btn btn-danger" type="button">
                                 <span class=" glyphicon glyphicon-filter"></span>
@@ -41,16 +41,34 @@
             </div>
             <!--result list-->
             <div class='row'>
-                <div class='col-md-4'>
+                <div class='col-sm-4'>
                     <div id = 'filter-error'>Words for filtering failture</div>
                     <!-- List view -->
-                    <div data-bind='foreach: popularLocation()' class="panel panel-default nav">
-                        <div data-bind='click: $root.panToVenueMarker' class="panel-body">
-                            <div data-bind='text: tips' class="panel-info">
+                    <div data-bind='foreach: popularLocation()' class="nav">
+                        <div data-bind='click: $root.panToVenueMarker' class="venue-list-item">
+                            <div class='left-content'>
+                                <div data-bind="text: name" class="venue-name"></div>
+                                <div class="venue-sub group">
+                                  <div class="venue-rating"><span data-bind="text: rating" class="badge"></span></div>
+                                  <div data-bind="text: formattedAddress" class="venue-address"></div>
+                                </div>
+                                <div class="venue-category">
+                                  <div class="glyphicon glyphicon-tag"></div>
+                                  <div data-bind="text: category" class="content"></div>
+                                </div>
+                                <div class="venue-contact">
+                                  <div class="glyphicon glyphicon-earphone"></div>
+                                  <div data-bind="text: formattedPhone" class="content"></div>
+                                </div>
+                                <div class="venue-website">
+                                  <div class="glyphicon glyphicon-globe"></div>
+                                  <div data-bind="text: url" class="content"></div>
+                                </div>
                             </div>
-                            <div class="panel-more1">
-                                <img data-bind="attr: {src: photoUrl}" class='img-responsive'/>
-                                <br /><span>Caption</span>
+                            <div class='right-content'>
+                                <div class="panel-more1">
+                                    <img data-bind="attr: {src: photoUrl, id: id}" class='img-responsive'/>
+                                </div>
                             </div>
                         </div>
                     </div>

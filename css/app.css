@@ -20,11 +20,8 @@
 .nav {
   max-height: 250px;
   overflow-y:scroll;
+  overflow-x:hidden;
   background-color: white;
-}
-
-.venue-list-window {
-  width: 100%;
 }
 
 .custom-search-input {
@@ -73,29 +70,37 @@
 .panel-more1 {
   float: right;
   vertical-align: top;
+  margin-top: 10px;
 }
 
 .panel-body {
   float: left;
-  width: 100%;
+}
+
+.venue-list-item {
+  position: relative;
+  left:5px;
 }
 
 .venue-list-container {
   padding-top: 5px;
 }
-.venue-list-window {
-  margin
+
+.content {
+  display: inline-block;
 }
 
-.left-content .right-content {
+.left-content {
   display: inline-block;
   height:100%;
+  width: 100%;
 }
 .left-content {
+  width:70%;
 }
 .right-content {
-  width: 100%;
   display: inline;
   vertical-align: top;
   float: right;
+  width:30%;
 }
