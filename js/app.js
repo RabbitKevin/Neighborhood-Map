@@ -69,15 +69,16 @@ function AppViewModel() {
         lngInfo,
         bounds,
         map;
-    var default_ExploreKeyWord = 'restaurant';//default keyword for venue filtering
+    var default_ExploreKeyWord = 'restaurant';
     var default_SearchPlace = 'Milpitas'
     //------Observable data--------------//
     self.search_location = ko.observable(default_SearchPlace);
-    self.exploreKeyword = ko.observable(default_ExploreKeyWord);//return the popular places in specified position
-    self.popularLocation = ko.observableArray();//array contain all positions from foursquare
+    self.exploreKeyword = ko.observable(default_ExploreKeyWord);
+    self.popularLocation = ko.observableArray();
     self.selectedMarker = ko.observable();
     //function getNearby
     //---------Inner function-------//
+
     function setMarkerBounce(marker) {
         if(!marker.getAnimation()) {
             self.popularLocation().forEach(function(venue) {
@@ -86,6 +87,7 @@ function AppViewModel() {
             marker.setAnimation(google.maps.Animation.BOUNCE);
         }
     }
+
     function createMarkerWindowInfo(venue) {
         var content = '<div class="venue-infowindow">'
                             + '<div class="venue-category"><span class="glyphicon glyphicon-user"></span>'
@@ -94,6 +96,7 @@ function AppViewModel() {
                             + '</div>';
         return  content;
     }
+
     //Create single marker for given venue object//
     function createVenueMarkers(venue) {
         //Position info for marker
@@ -103,18 +106,19 @@ function AppViewModel() {
             position: venuePosition,
             title: venue.name
         });
-        var markerWindowInfo = createMarkerWindowInfo(venue);
+
         //------Add clicker info-----//
         venueMarker.addListener('click', function() {
             document.getElementById(venue.id).scrollIntoView();
             map.setCenter(venuePosition);//move the center to the position marker if not in there
             setMarkerBounce(venue.marker);
+            var markerWindowInfo = createMarkerWindowInfo(venue);
             infowindow.setContent(markerWindowInfo);
             infowindow.open(map, venueMarker);
         });
-        //link marker to venue
-        venue.marker = venueMarker;
+        venue.marker = venueMarker;//link marker to venue
     }
+
     //---------Create map center marker------//
     function setMapCenterMarker(position) {
         map.panTo(position.geometry.location);//move the map to searched result place
@@ -163,12 +167,12 @@ function AppViewModel() {
                 responseData.forEach(function(item){
                     //console.log(item.venue.name);
                     var tmp = new Venue(item, client_info);
-                    self.popularLocation.push(tmp);
+                    self.popularLocation.push(tmp);//save return location
                 });
                 //-----Creating marker and photo------//
                 self.popularLocation().forEach(function(venue){
                     console.log('Creating marker');
-                    createVenueMarkers(venue);
+                    createVenueMarkers(venue);//create venue Markers for each venue
                 });
                 //-----Change the map bounds for fitting----//
                 var mapBounds = data.response.suggestedBounds;
@@ -189,13 +193,14 @@ function AppViewModel() {
             }
         });
     }
+
     function getGeographyInfoCallBack(placeList, status) {
         //The response do not contain a valid result
         if(status != google.maps.places.PlacesServiceStatus.OK) {
             $('#Map_Loading_Error').html('<h2>Errors in searching</h2><h2>Try other position name</h2>');
             return;
         }
-        var searchPlace = placeList[0];
+        var searchPlace = placeList[0];//get the first return pos
         console.log(searchPlace.geometry.location.toString());
         setMapCenterMarker(searchPlace);
         latInfo = searchPlace.geometry.location.lat();
@@ -205,12 +210,13 @@ function AppViewModel() {
         //-------------------------------------------------//
 
     }
+
     function getGeographyInfo(locationName) {
         var request = {
             query: locationName
         };
         searchService = new google.maps.places.PlacesService(map);
-        searchService.textSearch(request, getGeographyInfoCallBack);
+        searchService.textSearch(request, getGeographyInfoCallBack);//get geometry information about input pos
     }
 
     function getCurrentDate() {
@@ -222,7 +228,7 @@ function AppViewModel() {
         day = day > 9?day+'':'0'+day;
         return year+month+day;
     }
-    //Function for initializing map
+
     function initializeMap() {
         mapOptions = {
             center: {lat: 37.777158, lng: -122.4185117},//just for test, initial position
@@ -233,7 +239,7 @@ function AppViewModel() {
             $('#Map_Loading_Error').html('<h2>Errors in retriving map</h2><h2>Check network and try refresh page later.</h2>');
             return;
         }
-        map = new google.maps.Map(document.getElementById('Map_Canvas'), mapOptions);
+        map = new google.maps.Map(document.getElementById('Map_Canvas'), mapOptions);//create map obj
         $('#Map_Canvas').height($(window).height());//Set the height of map to the height of whole window
         getGeographyInfo(default_SearchPlace);
     };
@@ -244,6 +250,7 @@ function AppViewModel() {
         google.maps.event.trigger(map, "resize");
         map.setCenter(center);
     });
+
     //-------Search function triggered by search button------//
     self.searchPos = function() {
         getGeographyInfo(self.search_location());
