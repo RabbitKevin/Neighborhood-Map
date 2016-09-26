@@ -68,14 +68,19 @@ function AppViewModel() {
         latInfo,
         lngInfo,
         bounds,
+        centerMarker,
         map;
     var default_ExploreKeyWord = 'restaurant';
     var default_SearchPlace = 'Milpitas'
+    var defaultShowList = true;
     //------Observable data--------------//
     self.search_location = ko.observable(default_SearchPlace);
     self.exploreKeyword = ko.observable(default_ExploreKeyWord);
-    self.popularLocation = ko.observableArray();
+    self.popularLocation = ko.observableArray();//list for venue
+    self.filteredLocation = ko.observableArray();
     self.selectedMarker = ko.observable();
+    self.isListVisible = ko.observable(defaultShowList);//value for list control icon
+    self.filterKeyword = ko.observable();//keyword for filter
     //function getNearby
     //---------Inner function-------//
 
@@ -99,14 +104,12 @@ function AppViewModel() {
 
     //Create single marker for given venue object//
     function createVenueMarkers(venue) {
-        //Position info for marker
         var venuePosition = new google.maps.LatLng(venue.lat, venue.lng);
         var venueMarker = new google.maps.Marker({
             map: map,
             position: venuePosition,
             title: venue.name
         });
-
         //------Add clicker info-----//
         venueMarker.addListener('click', function() {
             document.getElementById(venue.id).scrollIntoView();
@@ -116,11 +119,15 @@ function AppViewModel() {
             infowindow.setContent(markerWindowInfo);
             infowindow.open(map, venueMarker);
         });
-        venue.marker = venueMarker;//link marker to venue
+        venue.marker = venueMarker;
     }
 
-    //---------Create map center marker------//
+    /*
+        @para position, geography info object for required position
+        @p
+    */
     function setMapCenterMarker(position) {
+        if(centerMarker) centerMarker.setMap(null);//remove center Marker from the Map
         map.panTo(position.geometry.location);//move the map to searched result place
         //Create single market for the searched location point
         var positionIcon = {
@@ -135,6 +142,7 @@ function AppViewModel() {
             title: position.name,
             icon: positionIcon
         });
+        centerMarker = positionMarker;
         //Add event listener to the position Marker
         positionContent = "<h2>"+positionMarker.getTitle()+"<h2>";
             //Create inforwindow that contains position info
@@ -164,17 +172,16 @@ function AppViewModel() {
                 console.log(data);
                 var responseData = data.response.groups[0].items;//Array contain all venue information
                 self.popularLocation([]);
+                self.filteredLocation([]);
                 responseData.forEach(function(item){
                     //console.log(item.venue.name);
                     var tmp = new Venue(item, client_info);
-                    self.popularLocation.push(tmp);//save return location
+                    self.popularLocation.push(tmp);//location info for all venue(not filtered)
+                    self.filteredLocation.push(tmp);//array for those filtered venue
                 });
-                //-----Creating marker and photo------//
                 self.popularLocation().forEach(function(venue){
-                    console.log('Creating marker');
                     createVenueMarkers(venue);//create venue Markers for each venue
                 });
-                //-----Change the map bounds for fitting----//
                 var mapBounds = data.response.suggestedBounds;
                 if (mapBounds != undefined) {
                     console.log('Bounds change');
@@ -201,16 +208,16 @@ function AppViewModel() {
             return;
         }
         var searchPlace = placeList[0];//get the first return pos
-        console.log(searchPlace.geometry.location.toString());
+        //set center Marker
         setMapCenterMarker(searchPlace);
         latInfo = searchPlace.geometry.location.lat();
         lngInfo = searchPlace.geometry.location.lng();
-        //-------Request map info and draw marker----------//
+        //Request map info and draw marker
         getFourSquareInfo();
-        //-------------------------------------------------//
-
     }
-
+    /*
+        Get location info and use return info for Venue info
+    */
     function getGeographyInfo(locationName) {
         var request = {
             query: locationName
@@ -218,7 +225,6 @@ function AppViewModel() {
         searchService = new google.maps.places.PlacesService(map);
         searchService.textSearch(request, getGeographyInfoCallBack);//get geometry information about input pos
     }
-
     function getCurrentDate() {
         var date = new Date();
         var year = date.getFullYear()+'';
@@ -228,7 +234,9 @@ function AppViewModel() {
         day = day > 9?day+'':'0'+day;
         return year+month+day;
     }
-
+    /*
+        Initialize map config
+    */
     function initializeMap() {
         mapOptions = {
             center: {lat: 37.777158, lng: -122.4185117},//just for test, initial position
@@ -251,7 +259,10 @@ function AppViewModel() {
         map.setCenter(center);
     });
 
-    //-------Search function triggered by search button------//
+
+    /*
+        Method triggered by search button in page
+    */
     self.searchPos = function() {
         getGeographyInfo(self.search_location());
     }
@@ -268,9 +279,43 @@ function AppViewModel() {
         map.panTo(venuePosition);
         setMarkerBounce(venue.marker);//This is for marker animation
     }
+    /*
+        show result list icon button
+    */
+    self.showList = function() {
+        if(self.isListVisible()) {//show-hide
+            $('.menuIcon').removeClass('glyphicon-plus-sign').addClass('glyphicon-minus-sign').text('show');
+        } else {
+            $('.menuIcon').removeClass('glyphicon-minus-sign').addClass('glyphicon-plus-sign').text('hide');
+        }
+        self.isListVisible(!self.isListVisible());
+    }
+    /*
+        Filter function
+    */
+    self.filterVenue = function() {
+        var keyword = self.filterKeyword().trim();
+        self.filteredLocation.removeAll();
+        console.log('Clear venue list');
+        console.log(self.filteredLocation());
+        self.popularLocation().forEach(function(venue) {
+            venue.marker.setMap(null);//clear marker in map
+            if(!keyword || venue.name.indexOf(keyword) !== -1) {
+                venue.marker.setMap(map);//add marker to the map
+                self.filteredLocation.push(venue);
+            }
+        });
+    }
+    self.filterTest = function() {
+        console.log('filter test method');
+    }
 }
 
 //Initialize the AppViewModel
-$(function() {
-    ko.applyBindings(new AppViewModel());
-});
+function initMap() {
+    $(function() {
+        var viewModel = new AppViewModel();
+        viewModel.filterKeyword.subscribe(viewModel.filterVenue);
+        ko.applyBindings(viewModel);
+    });
+}

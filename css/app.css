@@ -123,7 +123,16 @@
   width:30%;
 }
 
-@media only screen and (max-width : 320px) {
+.toggleBar {
+    display: table;
+}
+
+.menuIcon.glyphicon {
+    float:left;
+    font-size: 20px;
+}
+
+@media screen and (max-width : 320px) {
   .left-content{
     width:60%;
   }
