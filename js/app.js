@@ -243,6 +243,8 @@ function AppViewModel() {
             zoom: 12,
             diableDefaultUI: true
         };
+        console.log('Show Google loading');
+        console.log(google);
         if(typeof google == 'undefined') {
             $('#Map_Loading_Error').html('<h2>Errors in retriving map</h2><h2>Check network and try refresh page later.</h2>');
             return;
@@ -313,9 +315,13 @@ function AppViewModel() {
 
 //Initialize the AppViewModel
 function initMap() {
-    $(function() {
-        var viewModel = new AppViewModel();
-        viewModel.filterKeyword.subscribe(viewModel.filterVenue);
-        ko.applyBindings(viewModel);
-    });
+    var viewModel = new AppViewModel();
+    viewModel.filterKeyword.subscribe(viewModel.filterVenue);
+    ko.applyBindings(viewModel);
 }
+
+setTimeout(function() {
+  if(!window.google || !window.google.maps) {
+      alert('Goolge map load fail, please try it later');
+  }
+}, 5000);
